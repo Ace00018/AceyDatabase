@@ -68,8 +68,14 @@ namespace ContactManagementSystem
 
         static void AddContact(ContactService contactService)
         {
-            Console.Write("Enter Name: ");
+            Console.Write("Enter Name or type 'cancel' to cancel: ");
             string name = Console.ReadLine();
+
+            if (name.ToLower() == "cancel")
+            {
+                Console.WriteLine("Adding contact canceled.");
+                return;
+            }
 
             while (!IsValidName(name))
             {
@@ -77,8 +83,14 @@ namespace ContactManagementSystem
                 name = Console.ReadLine();
             }
 
-            Console.Write("Enter Phone Number: ");
+            Console.Write("Enter Phone Number or type 'cancel' to cancel: ");
             string phoneNumber = Console.ReadLine();
+
+            if (phoneNumber.ToLower() == "cancel")
+            {
+                Console.WriteLine("Adding contact canceled.");
+                return;
+            }
 
             while (!IsValidPhoneNumber(phoneNumber))
             {
@@ -91,16 +103,94 @@ namespace ContactManagementSystem
 
         static void RemoveContact(ContactService contactService)
         {
-            Console.Write("Enter the name of the contact to remove: ");
-            string name = Console.ReadLine();
-            contactService.RemoveContact(name);
+            ShowContactsForEditing(contactService, "Remove Contact");
+
+            Console.Write("Enter the number of the contact to remove or 0 to cancel: ");
+            int contactNumber = GetChoice(0, contactService.GetContacts().Count);
+
+            if (contactNumber != 0)
+            {
+                Contact contactToRemove = contactService.GetContacts()[contactNumber - 1];
+                if (contactToRemove != null)
+                {
+                    contactService.RemoveContact(contactToRemove.Name);
+                    contactService.SaveContacts();
+                }
+                else
+                {
+                    Console.WriteLine("Contact not found.");
+                }
+            }
         }
 
         static void EditContact(ContactService contactService)
         {
-            Console.Write("Enter the name of the contact to edit: ");
-            string name = Console.ReadLine();
-            contactService.EditContact(name);
+            ShowContactsForEditing(contactService, "Edit Contact");
+
+            Console.Write("Enter the number of the contact to edit or 0 to cancel: ");
+            int contactNumber = GetChoice(0, contactService.GetContacts().Count);
+
+            if (contactNumber != 0)
+            {
+                Contact contactToEdit = contactService.GetContacts()[contactNumber - 1];
+                if (contactToEdit != null)
+                {
+                    Console.WriteLine($"Editing contact: {contactToEdit.Name}, Phone: {contactToEdit.PhoneNumber}");
+                    Console.WriteLine("Choose what to edit:");
+                    Console.WriteLine("1. Name");
+                    Console.WriteLine("2. Phone Number");
+                    Console.WriteLine("3. Both");
+                    Console.WriteLine("4. Cancel");
+
+                    int editChoice = GetChoice(1, 4);
+
+                    switch (editChoice)
+                    {
+                        case 1:
+                            Console.Write("Enter new Name: ");
+                            string newName = Console.ReadLine();
+                            contactToEdit.Name = newName;
+                            break;
+                        case 2:
+                            Console.Write("Enter new Phone Number: ");
+                            string newPhoneNumber = Console.ReadLine();
+
+                            while (!IsValidPhoneNumber(newPhoneNumber))
+                            {
+                                Console.Write("Invalid phone number. Please enter a valid number: ");
+                                newPhoneNumber = Console.ReadLine();
+                            }
+
+                            contactToEdit.PhoneNumber = newPhoneNumber;
+                            break;
+                        case 3:
+                            Console.Write("Enter new Name: ");
+                            newName = Console.ReadLine();
+
+                            Console.Write("Enter new Phone Number: ");
+                            newPhoneNumber = Console.ReadLine();
+
+                            while (!IsValidPhoneNumber(newPhoneNumber))
+                            {
+                                Console.Write("Invalid phone number. Please enter a valid number: ");
+                                newPhoneNumber = Console.ReadLine();
+                            }
+
+                            contactToEdit.Name = newName;
+                            contactToEdit.PhoneNumber = newPhoneNumber;
+                            break;
+                        case 4:
+                            Console.WriteLine("Edit canceled.");
+                            break;
+                    }
+
+                    contactService.SaveContacts();
+                }
+                else
+                {
+                    Console.WriteLine("Contact not found.");
+                }
+            }
         }
 
         static void ShowContacts(ContactService contactService)
@@ -116,6 +206,24 @@ namespace ContactManagementSystem
         static bool IsValidPhoneNumber(string phoneNumber)
         {
             return !string.IsNullOrEmpty(phoneNumber) && phoneNumber.All(c => char.IsDigit(c) || c == '-' || c == '(' || c == ')');
+        }
+
+        static void ShowContactsForEditing(ContactService contactService, string action)
+        {
+            var contacts = contactService.GetContacts();
+
+            if (contacts.Count > 0)
+            {
+                Console.WriteLine($"Contacts for {action}:");
+                for (int i = 0; i < contacts.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {contacts[i].Name}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"No contacts available for {action.ToLower()}.");
+            }
         }
     }
 }

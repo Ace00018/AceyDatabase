@@ -81,7 +81,12 @@ namespace ContactManagementSystem.Services
 
         public void EditContact(string name)
         {
-            Contact contactToEdit = contacts.Find(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            ShowContactsForEditing();
+
+            Console.Write("Enter the number of the contact to edit: ");
+            int contactNumber = GetChoice(1, contacts.Count);
+
+            Contact contactToEdit = contacts[contactNumber - 1];
             if (contactToEdit != null)
             {
                 Console.WriteLine($"Editing contact: {contactToEdit.Name}, Phone: {contactToEdit.PhoneNumber}");
@@ -157,9 +162,14 @@ namespace ContactManagementSystem.Services
             }
         }
 
+        public List<Contact> GetContacts()
+        {
+            return contacts;
+        }
+
         private string GetContactsFilePath()
         {
-            string contactsDirectory = Path.Combine(userDirectory, "RustyDatabase"); // Changed folder name
+            string contactsDirectory = Path.Combine(userDirectory, "RustyDatabase");
             Directory.CreateDirectory(contactsDirectory);
 
             return Path.Combine(contactsDirectory, "contacts.txt");
@@ -173,6 +183,15 @@ namespace ContactManagementSystem.Services
                 Console.Write($"Invalid input. Enter a number between {minValue} and {maxValue}: ");
             }
             return choice;
+        }
+
+        private void ShowContactsForEditing()
+        {
+            Console.WriteLine("Choose a contact to edit:");
+            for (int i = 0; i < contacts.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {contacts[i].Name}");
+            }
         }
 
         private bool IsValidPhoneNumber(string phoneNumber)
