@@ -1,5 +1,3 @@
-
-
 namespace ContactManagementSystem.Models
 {
     class Contact

@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -62,6 +61,7 @@ namespace ContactManagementSystem.Services
             };
             contacts.Add(contact);
             Console.WriteLine("Contact added successfully!");
+            SaveContacts();
         }
 
         public void RemoveContact(string name)
@@ -71,6 +71,7 @@ namespace ContactManagementSystem.Services
             {
                 contacts.Remove(contactToRemove);
                 Console.WriteLine("Contact removed successfully!");
+                SaveContacts();
             }
             else
             {
@@ -78,28 +79,61 @@ namespace ContactManagementSystem.Services
             }
         }
 
-        public void EditContact(string name, string newPhoneNumber)
+        public void EditContact(string name)
         {
             Contact contactToEdit = contacts.Find(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             if (contactToEdit != null)
             {
-                contactToEdit.PhoneNumber = newPhoneNumber;
-                Console.WriteLine("Contact edited successfully!");
-            }
-            else
-            {
-                Console.WriteLine("Contact not found.");
-            }
-        }
+                Console.WriteLine($"Editing contact: {contactToEdit.Name}, Phone: {contactToEdit.PhoneNumber}");
+                Console.WriteLine("Choose what to edit:");
+                Console.WriteLine("1. Name");
+                Console.WriteLine("2. Phone Number");
+                Console.WriteLine("3. Both");
+                Console.WriteLine("4. Cancel");
 
-        public void EditContact(string name, string newName, string newPhoneNumber)
-        {
-            Contact contactToEdit = contacts.Find(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-            if (contactToEdit != null)
-            {
-                contactToEdit.Name = newName;
-                contactToEdit.PhoneNumber = newPhoneNumber;
-                Console.WriteLine("Contact edited successfully!");
+                int editChoice = GetChoice(1, 4);
+
+                switch (editChoice)
+                {
+                    case 1:
+                        Console.Write("Enter new Name: ");
+                        string newName = Console.ReadLine();
+                        contactToEdit.Name = newName;
+                        break;
+                    case 2:
+                        Console.Write("Enter new Phone Number: ");
+                        string newPhoneNumber = Console.ReadLine();
+
+                        while (!IsValidPhoneNumber(newPhoneNumber))
+                        {
+                            Console.Write("Invalid phone number. Please enter a valid number: ");
+                            newPhoneNumber = Console.ReadLine();
+                        }
+
+                        contactToEdit.PhoneNumber = newPhoneNumber;
+                        break;
+                    case 3:
+                        Console.Write("Enter new Name: ");
+                        newName = Console.ReadLine();
+
+                        Console.Write("Enter new Phone Number: ");
+                        newPhoneNumber = Console.ReadLine();
+
+                        while (!IsValidPhoneNumber(newPhoneNumber))
+                        {
+                            Console.Write("Invalid phone number. Please enter a valid number: ");
+                            newPhoneNumber = Console.ReadLine();
+                        }
+
+                        contactToEdit.Name = newName;
+                        contactToEdit.PhoneNumber = newPhoneNumber;
+                        break;
+                    case 4:
+                        Console.WriteLine("Edit canceled.");
+                        break;
+                }
+
+                SaveContacts();
             }
             else
             {
@@ -131,9 +165,19 @@ namespace ContactManagementSystem.Services
             return Path.Combine(contactsDirectory, "contacts.txt");
         }
 
-        internal Contact GetContactByName(string name)
+        private int GetChoice(int minValue, int maxValue)
         {
-            return contacts.FirstOrDefault(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            int choice;
+            while (!int.TryParse(Console.ReadLine(), out choice) || choice < minValue || choice > maxValue)
+            {
+                Console.Write($"Invalid input. Enter a number between {minValue} and {maxValue}: ");
+            }
+            return choice;
+        }
+
+        private bool IsValidPhoneNumber(string phoneNumber)
+        {
+            return !string.IsNullOrEmpty(phoneNumber) && phoneNumber.All(c => char.IsDigit(c) || c == '-' || c == '(' || c == ')');
         }
     }
 }

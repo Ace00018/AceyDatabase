@@ -1,9 +1,7 @@
-﻿
-
-using System;
-using System.Linq;
+﻿using System;
 using ContactManagementSystem.Models;
 using ContactManagementSystem.Services;
+using System.Linq;
 
 namespace ContactManagementSystem
 {
@@ -24,7 +22,7 @@ namespace ContactManagementSystem
                 Console.WriteLine("4. Show Contacts");
                 Console.WriteLine("5. Exit");
 
-                int choice = GetChoice();
+                int choice = GetChoice(1, 5);
 
                 switch (choice)
                 {
@@ -58,12 +56,12 @@ namespace ContactManagementSystem
             }
         }
 
-        static int GetChoice()
+        static int GetChoice(int minValue, int maxValue)
         {
             int choice;
-            while (!int.TryParse(Console.ReadLine(), out choice))
+            while (!int.TryParse(Console.ReadLine(), out choice) || choice < minValue || choice > maxValue)
             {
-                Console.Write("Invalid input. Enter your choice: ");
+                Console.Write($"Invalid input. Enter a number between {minValue} and {maxValue}: ");
             }
             return choice;
         }
@@ -100,41 +98,9 @@ namespace ContactManagementSystem
 
         static void EditContact(ContactService contactService)
         {
-            Console.WriteLine("Do you want to edit the name along with the phone number? (y/n): ");
-            string choice = Console.ReadLine();
-
             Console.Write("Enter the name of the contact to edit: ");
             string name = Console.ReadLine();
-
-            if (choice.ToLower() == "y")
-            {
-                Console.Write("Enter new Name: ");
-                string newName = Console.ReadLine();
-
-                Console.Write("Enter new Phone Number: ");
-                string newPhoneNumber = Console.ReadLine();
-
-                while (!IsValidPhoneNumber(newPhoneNumber))
-                {
-                    Console.Write("Invalid phone number. Please enter a valid number: ");
-                    newPhoneNumber = Console.ReadLine();
-                }
-
-                contactService.EditContact(name, newName, newPhoneNumber);
-            }
-            else
-            {
-                Console.Write("Enter new Phone Number: ");
-                string newPhoneNumber = Console.ReadLine();
-
-                while (!IsValidPhoneNumber(newPhoneNumber))
-                {
-                    Console.Write("Invalid phone number. Please enter a valid number: ");
-                    newPhoneNumber = Console.ReadLine();
-                }
-
-                contactService.EditContact(name, newPhoneNumber);
-            }
+            contactService.EditContact(name);
         }
 
         static void ShowContacts(ContactService contactService)
