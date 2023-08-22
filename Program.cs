@@ -11,11 +11,15 @@ namespace ContactManagementSystem
         {
             ContactService contactService = new ContactService();
             contactService.LoadContacts();
-
+            Console.Clear();
+            Console.SetWindowPosition(0, 0);
+            Console.WindowHeight = Console.LargestWindowHeight;
+            Console.WindowWidth = Console.LargestWindowWidth;
+            Console.SetBufferSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine("Contact Management System");
+                Console.WriteLine("  /$$$$$$                                       /$$$$$$                        /$$                           /$$           /$$$$$$$              /$$               /$$                                    \n /$$__  $$                                     /$$__  $$                      | $$                          | $$          | $$__  $$            | $$              | $$                                    \n| $$  \\ $$  /$$$$$$$  /$$$$$$  /$$   /$$      | $$  \\__/  /$$$$$$  /$$$$$$$  /$$$$$$    /$$$$$$   /$$$$$$$ /$$$$$$        | $$  \\ $$  /$$$$$$  /$$$$$$    /$$$$$$ | $$$$$$$   /$$$$$$   /$$$$$$$  /$$$$$$ \n| $$$$$$$$ /$$_____/ /$$__  $$| $$  | $$      | $$       /$$__  $$| $$__  $$|_  $$_/   |____  $$ /$$_____/|_  $$_/        | $$  | $$ |____  $$|_  $$_/   |____  $$| $$__  $$ |____  $$ /$$_____/ /$$__  $$\n| $$__  $$| $$      | $$$$$$$$| $$  | $$      | $$      | $$  \\ $$| $$  \\ $$  | $$      /$$$$$$$| $$        | $$          | $$  | $$  /$$$$$$$  | $$      /$$$$$$$| $$  \\ $$  /$$$$$$$|  $$$$$$ | $$$$$$$$\n| $$  | $$| $$      | $$_____/| $$  | $$      | $$    $$| $$  | $$| $$  | $$  | $$ /$$ /$$__  $$| $$        | $$ /$$      | $$  | $$ /$$__  $$  | $$ /$$ /$$__  $$| $$  | $$ /$$__  $$ \\____  $$| $$_____/\n| $$  | $$|  $$$$$$$|  $$$$$$$|  $$$$$$$      |  $$$$$$/|  $$$$$$/| $$  | $$  |  $$$$/|  $$$$$$$|  $$$$$$$  |  $$$$/      | $$$$$$$/|  $$$$$$$  |  $$$$/|  $$$$$$$| $$$$$$$/|  $$$$$$$ /$$$$$$$/|  $$$$$$$\n|__/  |__/ \\_______/ \\_______/ \\____  $$       \\______/  \\______/ |__/  |__/   \\___/   \\_______/ \\_______/   \\___/        |_______/  \\_______/   \\___/   \\_______/|_______/  \\_______/|_______/  \\_______/\n                               /$$  | $$                                                                                                                                                                  \n                              |  $$$$$$/                                                                                                                                                                  \n                               \\______/                                                                                                                                                                   ");
                 Console.WriteLine("1. Add Contact");
                 Console.WriteLine("2. Remove Contact");
                 Console.WriteLine("3. Edit Contact");
